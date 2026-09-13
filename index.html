@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>통계로 세상읽기 - 출석수업</title>
+<style>
+  :root {
+    --primary-color: #1f4e79;
+    --primary-hover: #153554;
+    --accent-color: #2b78e4;
+    --bg-main: #f3f4f6;
+    --stage-bg: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --slide-w: 1280px;
+    --slide-h: 720px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-main: #0f172a;
+      --stage-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Pretendard", "Apple SD Gothic Neo", sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Viewport & Responsive Scaling */
+  #viewport {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    padding: 16px;
+  }
+
+  #stage {
+    width: var(--slide-w);
+    height: var(--slide-h);
+    position: relative;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: var(--stage-bg);
+    overflow: hidden;
+    transform-origin: center center;
+    flex-shrink: 0;
+  }
+
+  .slide {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    padding: 48px 64px 36px 64px;
+  }
+
+  .slide.active { display: flex; }
+
+  /* Slide Typography & Layout */
+  .slide-head { margin-bottom: 8px; }
+  .eyebrow {
+    display: inline-block;
+    padding: 3px 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    background: var(--primary-color);
+    border-radius: 4px;
+  }
+
+  .slide-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .slide-title { color: #60a5fa; }
+  }
+
+  .rule {
+    border: none;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color) 0%, rgba(31, 78, 121, 0.1) 100%);
+    margin-bottom: 24px;
+    border-radius: 2px;
+  }
+
+  .slide-body {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 22px;
+    line-height: 1.65;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .subtitle {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .lead {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--accent-color);
+  }
+
+  .body { margin-bottom: 12px; }
+
+  .bullets {
+    padding-left: 24px;
+    margin-bottom: 16px;
+  }
+  .bullets li { margin-bottom: 8px; }
+  .bullets li.lv1 {
+    list-style-type: circle;
+    margin-left: 20px;
+    color: var(--text-muted);
+    font-size: 20px;
+  }
+
+  /* Tables */
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 19px;
+  }
+  .tbl th, .tbl td {
+    padding: 11px 15px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+  }
+  .tbl th {
+    background-color: rgba(31, 78, 121, 0.08);
+    font-weight: 600;
+  }
+
+  /* Media Handlers */
+  .media {
+    margin: 12px 0;
+    text-align: center;
+    max-height: 360px;
+  }
+  .media img {
+    max-width: 100%;
+    max-height: 340px;
+    border-radius: 4px;
+    object-fit: contain;
+  }
+  .media-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+  .media-row .media { flex: 1; margin: 0; }
+
+  .slide-foot {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+
+  /* Cover Slide Styling */
+  .section-cover {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(31, 78, 121, 0.06) 0%, rgba(15, 23, 42, 0.02) 100%);
+  }
+  .cover-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  .cover-badge {
+    display: inline-block;
+    padding: 7px 22px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary-color);
+    background: rgba(31, 78, 121, 0.1);
+    border-radius: 9999px;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+  .cover-main-title {
+    font-size: 58px;
+    font-weight: 900;
+    color: var(--primary-color);
+    letter-spacing: -1px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .cover-main-title { color: #60a5fa; }
+    .cover-badge { color: #93c5fd; background: rgba(96, 165, 250, 0.15); }
+  }
+  .cover-rule {
+    width: 100px;
+    height: 4px;
+    background: var(--accent-color);
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+  .cover-author {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .cover-prof {
+    font-size: 27px;
+    font-weight: 800;
+    color: var(--text-main);
+  }
+
+  /* 중간 표지(간지) 전용 디자인 */
+  .section-divider {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(43, 120, 228, 0.05) 0%, rgba(31, 78, 121, 0.02) 100%);
+  }
+  .divider-card {
+    background: var(--stage-bg);
+    border: 2px solid rgba(31, 78, 121, 0.15);
+    border-radius: 16px;
+    padding: 48px 64px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 860px;
+    width: 90%;
+  }
+  .divider-badge {
+    display: inline-block;
+    padding: 6px 20px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #ffffff;
+    background: var(--primary-color);
+    border-radius: 9999px;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  .divider-title {
+    font-size: 43px;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .divider-title { color: #60a5fa; }
+  }
+  .divider-rule {
+    width: 80px;
+    height: 4px;
+    background: var(--accent-color);
+    border-radius: 2px;
+    margin: 8px 0 20px 0;
+  }
+  .divider-desc {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Interactive Canvas */
+  .ink {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .drawing-active .ink {
+    pointer-events: auto;
+    cursor: crosshair;
+  }
+
+  /* Controls Navigation Bar */
+  #bar {
+    height: 52px;
+    background: var(--stage-bg);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    z-index: 20;
+    font-size: 16px;
+  }
+
+  #bar button {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 6px 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease-in-out;
+  }
+  #bar button:hover {
+    background: rgba(0,0,0,0.05);
+    border-color: var(--text-muted);
+  }
+  #bar button.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+  }
+
+  #counter input {
+    width: 48px;
+    text-align: center;
+    padding: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 15px;
+    background: transparent;
+    color: var(--text-main);
+  }
+
+  .spacer { flex: 1; }
+  .group { display: flex; align-items: center; gap: 6px; }
+  .hidden { display: none !important; }
+
+  .swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    padding: 0 !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  }
+  .swatch.on { outline: 2px solid var(--primary-color); }
+
+  /* Outline Drawer */
+  #outline {
+    position: fixed;
+    top: 0; left: 0; bottom: 52px;
+    width: 330px;
+    background: var(--stage-bg);
+    border-right: 1px solid var(--border-color);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 30;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  #outline.open { transform: translateX(0); }
+  .outline-item {
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .outline-item:hover, .outline-item.active {
+    background: rgba(31, 78, 121, 0.1);
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  /* Print Support */
+  @media print {
+    body { overflow: visible; height: auto; background: #fff; }
+    #viewport { display: block; padding: 0; }
+    #stage { width: 100% !important; height: auto !important; transform: none !important; box-shadow: none; }
+    .slide { display: flex !important; position: relative; page-break-after: always; height: 100vh; border-bottom: none; }
+    #bar, #outline, .ink { display: none !important; }
+  }
+</style>
+</head>
+<body data-deck-id="2025-d1484e">
+
+<main id="viewport">
+  <div id="stage">
+    <!-- SLIDE 1: 표지 -->
+    <section class="slide active section-cover" data-n="1">
+      <div class="cover-content">
+        <span class="cover-badge">한국방송통신대학교 출석수업</span>
+        <h1 class="cover-main-title">통계로 세상읽기</h1>
+        <div class="cover-rule"></div>
+        <p class="cover-author">한국방송통신대학교 통계ㆍ데이터과학과</p>
+        <p class="cover-prof">이긍희 교수</p>
+      </div>
+      <footer class="slide-foot"><span>통계로 세상읽기</span><span class="pageno">1</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 2: 질문 오리엔테이션 -->
+    <section class="slide" data-n="2">
+      <div class="slide-body">
+        <h2 class="slide-title">목차</h2>
+        <hr class="rule">
+        <ul class="bullets">
+          <li>우리가 사는 세상을 어떻게 살펴볼까</li>
+          <li>불확실한 세상을 어떻게 이해할까</li>
+          <li>통계로 어떻게 추측하고, 판단할까</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>통계로 세상읽기</span><span class="pageno">2</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 3: 제1강 중간 표지 -->
+    <section class="slide section-divider" data-n="3">
+      <div class="divider-card">
+        <span class="divider-badge">LECTURE 01</span>
+        <h2 class="divider-title">우리가 사는 세상을 어떻게 살펴볼까</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">통계와 통계학 · 데이터와 지수 · 국가통계</p>
+      </div>
+      <footer class="slide-foot"><span>제1강 우리가 사는 세상을 어떻게 살펴볼까</span><span class="pageno">3</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 4: 제1강 1단원 중간 표지 -->
+    <section class="slide section-divider" data-n="4">
+      <div class="divider-card">
+        <span class="divider-badge">PART 01</span>
+        <h2 class="divider-title">통계와 통계학은 무엇인가</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">통계(Statistics)와 통계학의 기본 개념 및 사회적 역할</p>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">4</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 5 -->
+    <section class="slide" data-n="5">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">빅데이터 시대</h3>
+        <ul class="bullets">
+          <li>우리의 일상생활은 스마트 기기나 센서 등을 통해 측정되어 데이터로 축적, 정리</li>
+          → <strong>빅데이터 시대</strong>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">5</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 6 -->
+    <section class="slide" data-n="6">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터</h3>
+        <ul class="bullets">
+          <li><strong>데이터</strong>: 수집된 원시정보, 단순 사실(fact)</li>
+          <li class="lv1">조사: 대상집단 일부를 선정해 조사</li>
+          <li class="lv1">실험: 특정 조건을 설정하여 효과 측정</li>
+          <li class="lv1">관찰: 행정 보고, 센서 데이터처럼 자동으로 생성된 정보</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">6</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 7 -->
+    <section class="slide" data-n="7">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계</h3>
+        <ul class="bullets">
+          <li><strong>통계(statistics)</strong>: 특정 집단의 특성을 요약·예측하는 데 사용되는 숫자정보 → 데이터를 평균, 지수 형태로 요약</li>
+          <li class="lv1">소비자물가지수, 경제성장률, 강수확률, 네이버 트렌드 등</li>
+        </ul>
+        <table class="tbl">
+          <thead>
+            <tr><th>분야</th><th>통계 (숫자정보)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>날씨</td><td>강수확률, 기온, 불쾌지수, 빨래지수</td></tr>
+            <tr><td>경제</td><td>GDP(국내총생산), 인플레이션율, 주가지수, 환율, 금리, 실업률</td></tr>
+            <tr><td>여론조사</td><td>정당지지율, TV 시청률</td></tr>
+            <tr><td>마케팅</td><td>소비자 만족도</td></tr>
+            <tr><td>스포츠</td><td>타율, 장타율, 패스 성공률</td></tr>
+            <tr><td>교육</td><td>IQ, 평균 점수 등</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">7</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 8 -->
+    <section class="slide" data-n="8">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">융건릉의 식목과 다산 정약용</h3>
+        <ul class="bullets">
+          <li>1789년∼1795년까지 현륭원 주변 8개 고을 식목</li>
+          <li class="lv1">정조는 다산 정약용에게 식목 관련 내역 정리 명령</li>
+          <li>다산: 식목 장부 → 스프레드시트 방식 요약</li>
+          <li class="lv1">7년 12번 식목 → 12번 가로, 8개 고을 세로 정리</li>
+          <li class="lv1">총수: 1,200만 9,712그루</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">8</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 9 -->
+    <section class="slide" data-n="9">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 정립</h3>
+        <ul class="bullets">
+          <li>통계가 확률이론과 결합</li>
+          <li class="lv1">→ 통계로 세상을 체계적으로 이해하고 의사결정할 수 있는 방법의 학문인 <strong>통계학(statistics)</strong> 정립</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">9</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 10 -->
+    <section class="slide" data-n="10">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 정의</h3>
+        <ul class="bullets">
+          <li><strong>통계학</strong>: 데이터의 공정한 수집, 정리·요약, 미지의 사실에 대한 추측 및 의사결정하는 방법의 학문</li>
+          <li class="lv1">데이터의 수집과 분석: 표본조사, 실험</li>
+          <li class="lv1">데이터의 요약과 설명: 1인당 국민소득, 타율과 연봉의 상관관계</li>
+          <li class="lv1">데이터로부터 결론 도출: 경제성장률 예측, 신약 승인</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">10</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 11 -->
+    <section class="slide" data-n="11">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 역할</h3>
+        <ul class="bullets">
+          <li><strong>과학철학자 해킹(I. Hacking)</strong></li>
+          <li class="lv1">"통계학자는 기술을 발견하여 세상을 바꾼 것이 아니라, 생각하는 방법이나 자기 견해를 내세우는 방법을 변화시켜 세상을 바꾸었다."</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">11</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 12 -->
+    <section class="slide" data-n="12">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계와 통계학</h3>
+        <ul class="bullets">
+          <li>영문 명칭 모두 <strong>Statistics</strong></li>
+          <li class="lv1">통계: 해당 분야 지식이 중요, 통계학이 반드시 필요하지는 않음</li>
+          <li class="lv1">통계학: 해당 분야를 체계적으로 분석·예측</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">12</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 13 -->
+    <section class="slide" data-n="13">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계 리터러시</h3>
+        <ul class="bullets">
+          <li><strong>H. G. Wells: 통계 리터러시(statistical literacy)</strong></li>
+          <li class="lv1">"통계적으로 생각하고 판단하는 것은 읽기나 쓰기 능력과 마찬가지로 유능한 시민이 되기 위해 반드시 갖추어야 할 능력이다."</li>
+        </ul>
+        <div class="media-row">
+          <figure class="media"><img src="img/s013_01.jpg" alt="리터러시 관련 자료 1"></figure>
+          <figure class="media"><img src="img/s013_02.jpg" alt="리터러시 관련 자료 2"></figure>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">13</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 14: 제1강 2단원 중간 표지 -->
+    <section class="slide section-divider" data-n="14">
+      <div class="divider-card">
+        <span class="divider-badge">PART 02</span>
+        <h2 class="divider-title">데이터를 통계로 어떻게 만들까</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">데이터의 분포 · 중심위치 · 산포 · 지수</p>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">14</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 15 -->
+    <section class="slide" data-n="15">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터를 어떻게 살펴볼까</h3>
+        <h4 class="lead">통계학 점수와 수학 점수</h4>
+        <figure class="media"><img src="img/s015_01.png" alt="점수 데이터 원자료"></figure>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">15</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 16 -->
+    <section class="slide" data-n="16">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터를 어떻게 살펴볼까</h3>
+        <h4 class="lead">통계학 점수와 수학 점수 도수분포표와 히스토그램</h4>
+        <div class="media-row">
+          <figure class="media"><img src="img/s016_01.png" alt="도수분포표"></figure>
+          <figure class="media"><img src="img/s016_02.png" alt="히스토그램"></figure>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">16</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 17 -->
+    <section class="slide" data-n="17">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터 시각화</h3>
+        <h4 class="lead">나이팅게일의 장미도표</h4>
+        <figure class="media"><img src="img/s017_01.jpg" alt="나이팅게일 장미도표"></figure>
+        <p class="body" style="font-size: 16px; color: var(--text-muted);">출처: Wikimedia Commons (Nightingale-mortality)</p>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">17</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 18 -->
+    <section class="slide" data-n="18">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터의 유용한 정보</h3>
+        <ul class="bullets">
+          <li><strong>중심위치</strong></li>
+          <li class="lv1">평균(mean), 중앙값(median), 최빈값(mode)</li>
+          <li><strong>산포</strong></li>
+          <li class="lv1">분산(variance), 표준편차(standard deviation), 범위(range)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">18</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 19 -->
+    <section class="slide" data-n="19">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터의 중심위치</h3>
+        <ul class="bullets">
+          <li><strong>19세기 이전</strong>: 평균은 유용한 정보를 버리고 잘못된 정보가 섞일 수 있다고 인식</li>
+          <li><strong>19세기</strong>: 과학 관측에서 데이터 값들이 평균 중심으로 분포한다는 사실 규명 → 다른 분야 확산</li>
+          <li class="lv1">케틀레(A. Quételet): 사회 데이터를 모아 정리하며 '평균인' 개념 도입</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">19</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 20 -->
+    <section class="slide" data-n="20">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터의 중심위치</h3>
+        <ul class="bullets">
+          <li><strong>20세기</strong>: 평균은 민주주의, 집단지성, 크라우드소싱 등으로 확장</li>
+          <li class="lv1">1906년 골턴의 황소 무게 추정 실험</li>
+          <li>평균은 국가통계 등 각종 통계 작성의 핵심 기반</li>
+          <li class="lv1">1인당 국민소득, 평균기온, 소비자물가지수, 주가지수</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">20</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 21 -->
+    <section class="slide" data-n="21">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터의 중심위치</h3>
+        <ul class="bullets">
+          <li><strong>중앙값(Median)</strong>: 크기 순서대로 정렬했을 때 중앙에 위치하는 값</li>
+          <li><strong>최빈값(Mode)</strong>: 관심 대상 데이터 중 빈도수(도수)가 가장 큰 값</li>
+          <li class="lv1">질적 데이터의 대푯값으로 유용하게 활용 (예: 선거 후보자 선출)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">21</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 22 -->
+    <section class="slide" data-n="22">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터의 중심위치</h3>
+        <figure class="media"><img src="img/s022_01.png" alt="중심위치 비교 1"></figure>
+        <figure class="media"><img src="img/s022_02.png" alt="중심위치 비교 2"></figure>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">22</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 23 -->
+    <section class="slide" data-n="23">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">데이터의 산포</h3>
+        <ul class="bullets">
+          <li><strong>산포의 측정 지표</strong></li>
+          <li class="lv1"><strong>범위(Range)</strong>: 최댓값과 최솟값의 차이</li>
+          <li class="lv1"><strong>분산(Variance)</strong>: (관찰값 - 평균)의 편차제곱합을 (데이터 수 - 1)로 나눈 값</li>
+          <li class="lv1"><strong>표준편차(Standard Deviation)</strong>: 분산의 양의 제곱근</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">23</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 24 -->
+    <section class="slide" data-n="24">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">산포의 측정</h3>
+        <h4 class="lead">자녀 수 데이터의 범위, 분산 및 표준편차</h4>
+        <figure class="media"><img src="img/s024_01.png" alt="자녀 수 산포 계산"></figure>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">24</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 25 -->
+    <section class="slide" data-n="25">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">지수의 개념</h3>
+        <ul class="bullets">
+          <li><strong>지수(Index)</strong>: 시간의 경과에 따라 수량이나 가격 등의 종합적 변화를 파악하기 위한 통계 지표</li>
+          <li class="lv1">가격지수와 물량지수로 대별</li>
+          <li class="lv1">산출 공식: 라스파이레스(Laspeyres)식, 파셰(Paasche)식, 피셔(Fisher)식</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">25</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 26 -->
+    <section class="slide" data-n="26">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 데이터를 통계로 어떻게 만들까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">물가지수</h3>
+        <h4 class="lead">물가지수 산출 예시</h4>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>품목</th>
+              <th>기준연도 (2020) 물량</th>
+              <th>기준연도 가격</th>
+              <th>비교연도 가격</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>사과</td>
+              <td>100</td>
+              <td>1,000</td>
+              <td>1,500</td>
+            </tr>
+            <tr>
+              <td>배</td>
+              <td>50</td>
+              <td>1,500</td>
+              <td>2,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <footer class="slide-foot"><span>2. 데이터를 통계로 어떻게 만들까</span><span class="pageno">26</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 27: 제1강 3단원 중간 표지 -->
+    <section class="slide section-divider" data-n="27">
+      <div class="divider-card">
+        <span class="divider-badge">PART 03</span>
+        <h2 class="divider-title">국가통계로 본 우리나라</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">국가통계의 필요성과 역할 · 인구 변화 · GDP 및 CPI</p>
+      </div>
+      <footer class="slide-foot"><span>3. 국가통계로 본 우리나라</span><span class="pageno">27</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 28 -->
+    <section class="slide" data-n="28">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 국가통계로 본 우리나라</h2>
+        <hr class="rule">
+        <h3 class="subtitle">국가통계의 역할</h3>
+        <ul class="bullets">
+          <li><strong>국가통계</strong>: 국가 상태를 측정하여 숫자로 요약한 핵심 지표</li>
+          <li class="lv1">국가 정책 및 중장기 발전계획 수립의 기초 자료</li>
+          <li>제도적 틀을 유지하고 국민적 합의를 도출하기 위한 국가경영 인프라</li>
+          <li>영국 정부의 <strong>통계에서의 신뢰의 구축 보고서</strong></li>
+          <li class="lv1"><em>"국가통계는 믿음을 기저로 하는 민주주의 제도에서 핵심적 역할"</em></li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 국가통계로 본 우리나라</span><span class="pageno">28</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 29 -->
+    <section class="slide" data-n="29">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 국가통계로 본 우리나라</h2>
+        <hr class="rule">
+        <h3 class="subtitle">인구</h3>
+        <ul class="bullets">
+          <li>인구: 출생, 사망, 국가 간 이동을 통해 결정</li>
+          <li class="lv1">인구주택총조사 및 장래인구추계</li>
+          <li class="lv1">심각한 저출산 및 초고령화 현상 분석</li>
+        </ul>
+        <figure class="media"><img src="img/s029_01.png" alt="인구 피라미드 및 추이"></figure>
+      </div>
+      <footer class="slide-foot"><span>3. 국가통계로 본 우리나라</span><span class="pageno">29</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 30 -->
+    <section class="slide" data-n="30">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 국가통계로 본 우리나라</h2>
+        <hr class="rule">
+        <h3 class="subtitle">국민소득통계</h3>
+        <ul class="bullets">
+          <li><strong>GDP 통계</strong>: 1930년대 초 대공황 극복 과정에서 개발, '20세기 최고의 발명' 중 하나로 평가</li>
+          <li class="lv1">경제 규모: 1953년 13.5억 달러 → 2022년 약 1.67조 달러</li>
+          <li class="lv1">1인당 소득: 1953년 67달러 → 2017년 3만 달러 돌파</li>
+          <li class="lv1">1953~2023년 연평균 경제성장률: 약 6.9%</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 국가통계로 본 우리나라</span><span class="pageno">30</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 31 -->
+    <section class="slide" data-n="31">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 국가통계로 본 우리나라</h2>
+        <hr class="rule">
+        <h3 class="subtitle">소비자물가지수</h3>
+        <ul class="bullets">
+          <li><strong>소비자물가지수(CPI)</strong>: 일상생활을 영위하기 위해 구입하는 재화와 서비스 가격 변동 측정</li>
+          <li class="lv1">인플레이션율: 통화정책 및 한국은행 기준금리 결정의 기준</li>
+          <li class="lv1">1965년 2.61 → 2023년 111.59 (약 43배 상승)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 국가통계로 본 우리나라</span><span class="pageno">31</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 32: 제2강 중간 표지 -->
+    <section class="slide section-divider" data-n="32">
+      <div class="divider-card">
+        <span class="divider-badge">LECTURE 02</span>
+        <h2 class="divider-title">불확실한 세상을 어떻게 이해할까</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">우연과 확률 · 조건부 확률과 독립 · 정규분포</p>
+      </div>
+      <footer class="slide-foot"><span>제2강 불확실한 세상을 어떻게 이해할까</span><span class="pageno">32</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 33: 제2강 1단원 중간 표지 -->
+    <section class="slide section-divider" data-n="33">
+      <div class="divider-card">
+        <span class="divider-badge">PART 01</span>
+        <h2 class="divider-title">확률은 무엇인가</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">우연과 확률의 정의 · 객관적 확률과 주관적 확률</p>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">33</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 34 -->
+    <section class="slide" data-n="34">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">우연과 확률</h3>
+        <ul class="bullets">
+          <li>불확실한 현실에서 동일한 사건을 반복 관찰하면 상대적 발생 비율이 일정하게 수렴 → <strong>확률</strong></li>
+          <li class="lv1">어떤 사건이 일어날 가능성을 0과 1 사이의 실수값으로 나타낸 것</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">34</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 35 -->
+    <section class="slide" data-n="35">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">동전 던지기와 확률</h3>
+        <h4 class="lead">고전적 정의 vs 빈도론적 정의</h4>
+        <ul class="bullets">
+          <li>동전 던지기(확률 실험)의 결과 공간: {앞면, 뒷면}</li>
+          <li class="lv1"><strong>고전적 정의</strong>: 모든 가능한 결과의 발생 가능성이 대등할 때 (1/2 = 50%)</li>
+          <li class="lv1"><strong>빈도론적 정의</strong>: 시행 횟수를 무한히 반복할 때 특정 결과의 상대도수가 50%에 수렴</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">35</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 36 -->
+    <section class="slide" data-n="36">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">생명보험과 확률</h3>
+        <ul class="bullets">
+          <li>생명보험: 개별 계약자의 사망 시점은 알 수 없으나 대규모 집단의 사망률은 일정</li>
+          <li class="lv1">대수의 법칙을 기반으로 생명표 작성</li>
+          <li class="lv1">불확실성을 통제 가능한 재무적 위험으로 변환</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">36</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 37 -->
+    <section class="slide" data-n="37">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">물리학과 우연</h3>
+        <ul class="bullets">
+          <li><strong>고전물리학 (17~19세기)</strong>: 결정론적 세계관 (우연 배제)</li>
+          <li><strong>현대물리학 (20세기~)</strong>: 미시 세계의 본질적 불확실성 규명 → <strong>양자역학</strong></li>
+          <li class="lv1">우연과 확률은 자연계를 설명하는 가장 근본적인 법칙</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">37</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 38 -->
+    <section class="slide" data-n="38">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">확률의 정의</h3>
+        <ul class="bullets">
+          <li><strong>객관적 확률</strong>: 반복 가능한 실험과 실제적 가능성에 기반 (빈도론적, 공리적 접근)</li>
+          <li><strong>주관적 확률</strong>: 특정 사건에 대한 개인적 믿음이나 확신의 강도 (베이즈주의 접근)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">38</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 39 -->
+    <section class="slide" data-n="39">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">주관적 확률과 인지 편향</h3>
+        <ul class="bullets">
+          <li>우리의 일상적 경험은 횟수가 적어 주관적 확률에 강하게 의존</li>
+          <li><strong>머피의 법칙</strong>: 심리적 선택과 확증 편향의 예시</li>
+          <li class="lv1">급하게 택시를 잡으면 반대편 차선에만 나타남</li>
+          <li class="lv1">내가 선 대기 줄만 유독 느리게 줄어듦</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">39</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 40 -->
+    <section class="slide" data-n="40">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 확률은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">주관적 확률의 수렴</h3>
+        <ul class="bullets">
+          <li>동일한 커피를 가격 표기만 다르게 제공했을 때 비싼 커피가 더 맛있다고 응답</li>
+          <li class="lv1">경험과 블라인드 테스트 횟수가 누적되면서 본래의 품질(객관적 사실) 인식</li>
+          <li class="lv1">정보와 관측이 늘어남에 따라 주관적 확률은 객관적 확률로 수렴</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 확률은 무엇인가</span><span class="pageno">40</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 41: 제2강 2단원 중간 표지 -->
+    <section class="slide section-divider" data-n="41">
+      <div class="divider-card">
+        <span class="divider-badge">PART 02</span>
+        <h2 class="divider-title">조건부 확률과 독립</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">조건부 확률과 베이즈 정리 · 사건의 독립성</p>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">41</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 42 -->
+    <section class="slide" data-n="42">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
+        <hr class="rule">
+        <h3 class="subtitle">조건부 확률</h3>
+        <ul class="bullets">
+          <li><strong>조건부 확률</strong>: 특정 정보(사건 B)가 주어졌을 때 또 다른 사건 A가 일어날 확률</li>
+          <li class="lv1">수식 표기: P(A|B) = P(A ∩ B) / P(B)</li>
+          <li class="lv1">사전 정보에 따라 불확실성이 조정됨</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">42</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 43 -->
+    <section class="slide" data-n="43">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
+        <hr class="rule">
+        <h3 class="subtitle">폐질환과 흡연</h3>
+        <ul class="bullets">
+          <li>전체 집단 중 폐질환 유병률: 100 / 2,000 = 5%</li>
+          <li>흡연자 집단 내 폐질환 유병률: 70 / 400 = 17.5%</li>
+        </ul>
+        <figure class="media"><img src="img/s043_01.png" alt="분할표 예시"></figure>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">43</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 44 -->
+    <section class="slide" data-n="44">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
+        <hr class="rule">
+        <h3 class="subtitle">조건부 확률과 베이즈 정리</h3>
+        <ul class="bullets">
+          <li>새로운 증거가 제시되었을 때 기존의 사전확률을 사후확률로 갱신하는 체계적 방법</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">44</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 45 -->
+    <section class="slide" data-n="45">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
+        <hr class="rule">
+        <h3 class="subtitle">베이즈 정리의 응용</h3>
+        <ul class="bullets">
+          <li>진단 키트의 민감도와 특이도, 그리고 실제 질병 유병률에 기초한 실제 감염 사후확률 계산</li>
+        </ul>
+        <figure class="media"><img src="img/s045_01.png" alt="베이즈 진단 모형"></figure>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">45</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 46 -->
+    <section class="slide" data-n="46">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
+        <hr class="rule">
+        <h3 class="subtitle">O.J. 심슨 재판과 조건부 확률</h3>
+        <ul class="bullets">
+          <li>가정 폭력 전력과 살인 사건 간의 올바른 조건부 확률 추론의 중요성</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">46</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 47 -->
+    <section class="slide" data-n="47">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
+        <hr class="rule">
+        <h3 class="subtitle">독립 (Independence)</h3>
+        <ul class="bullets">
+          <li>한 사건의 발생이 다른 사건이 일어날 확률에 아무런 영향을 주지 않는 상태</li>
+          <li class="lv1">P(A|B) = P(A) 성립 시 두 사건은 상호 독립</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">47</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 48: 제2강 3단원 중간 표지 -->
+    <section class="slide section-divider" data-n="48">
+      <div class="divider-card">
+        <span class="divider-badge">PART 03</span>
+        <h2 class="divider-title">복권과 확률</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">로또 복권의 구조와 당첨 확률 · 확률변수와 기댓값</p>
+      </div>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">48</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 49 -->
+    <section class="slide" data-n="49">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 복권과 확률</h2>
+        <hr class="rule">
+        <h3 class="subtitle">로또 복권의 구조</h3>
+        <ul class="bullets">
+          <li>45개 숫자 중 순서 없이 6개를 맞히는 조합</li>
+          <li class="lv1">가능한 조합의 수: <sub>45</sub>C<sub>6</sub> = 8,145,060가지</li>
+          <li class="lv1">1등 당첨 확률: 1 / 8,145,060 (약 0.0000123%)</li>
+          <li class="lv1">1~5등 전체 당첨 확률 합계: 약 2.36%</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">49</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 50 -->
+    <section class="slide" data-n="50">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 복권과 확률</h2>
+        <hr class="rule">
+        <h3 class="subtitle">로또 복권에 대한 통계적 고찰</h3>
+        <ul class="bullets">
+          <li>1등 당첨 확률이 극히 희박함에도 매회 여러 명의 당첨자가 나오는 이유: 대규모 구매량</li>
+          <li>과거 당첨 번호 추첨 결과를 바탕으로 다음 당첨 번호를 예측할 수 있는가? (독립시행의 원리)</li>
+          <li>로또 명당의 실체: 단순 판매량이 많은 매장</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">50</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 51 -->
+    <section class="slide" data-n="51">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 복권과 확률</h2>
+        <hr class="rule">
+        <h3 class="subtitle">복권의 기대 금액</h3>
+        <ul class="bullets">
+          <li><strong>기대 금액</strong>: 1장 구매 시 기대할 수 있는 당첨 환급금의 평균값</li>
+          <li>기댓값 산출과 복권 발행 수익 배분 구조</li>
+        </ul>
+        <figure class="media"><img src="img/s051_01.png" alt="로또 기댓값 표"></figure>
+      </div>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">51</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 52 -->
+    <section class="slide" data-n="52">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 복권과 확률</h2>
+        <hr class="rule">
+        <h3 class="subtitle">확률변수</h3>
+        <ul class="bullets">
+          <li><strong>확률변수</strong>: 확률 실험의 표본공간 각 원소를 실수값으로 대응시키는 함수</li>
+          <li class="lv1"><strong>이산형 확률변수</strong>: 취할 수 있는 값을 셀 수 있는 변수 (사망자 수, 로또 일치 개수 등)</li>
+          <li class="lv1"><strong>연속형 확률변수</strong>: 특정 구간 내 모든 실수값을 취할 수 있는 변수 (키, 몸무게, 시간 등)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">52</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 53 -->
+    <section class="slide" data-n="53">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 복권과 확률</h2>
+        <hr class="rule">
+        <h3 class="subtitle">확률변수의 기댓값</h3>
+        <ul class="bullets">
+          <li>확률변수가 가질 수 있는 값들에 해당 확률을 가중치로 곱하여 합산한 무게중심</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">53</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 54: 제2강 4단원 중간 표지 -->
+    <section class="slide section-divider" data-n="54">
+      <div class="divider-card">
+        <span class="divider-badge">PART 04</span>
+        <h2 class="divider-title">정규분포와 그 응용</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">정규분포의 성질 · 중심극한정리 · 교육 평가 응용</p>
+      </div>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">54</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 55 -->
+    <section class="slide" data-n="55">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 정규분포와 그 응용</h2>
+        <hr class="rule">
+        <h3 class="subtitle">정규분포의 발견 역사</h3>
+        <ul class="bullets">
+          <li>1738년 드 무아브르(de Moivre): 이항분포 근사식 규명</li>
+          <li>1809년 가우스(Gauss): 천문 관측 오차의 분포 모델링 (가우스 분포)</li>
+          <li>1810년 라플라스(Laplace): 중심극한정리 증명</li>
+        </ul>
+        <figure class="media"><img src="img/s055_01.png" alt="정규분포 발견"></figure>
+      </div>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">55</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 56 -->
+    <section class="slide" data-n="56">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 정규분포와 그 응용</h2>
+        <hr class="rule">
+        <h3 class="subtitle">정규분포의 형태와 특성</h3>
+        <div class="media-row">
+          <figure class="media"><img src="img/s056_01.png" alt="정규분포 곡선"></figure>
+          <figure class="media"><img src="img/s056_02.png" alt="표준정규분포"></figure>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">56</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 57 -->
+    <section class="slide" data-n="57">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 정규분포와 그 응용</h2>
+        <hr class="rule">
+        <h3 class="subtitle">중심극한정리</h3>
+        <ul class="bullets">
+          <li>모집단의 분포 형태에 관계없이 표본 크기(n)가 충분히 크면 표본평균의 분포는 정규분포에 근사</li>
+          <li class="lv1">통계적 추론의 수학적 기반 제공</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">57</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 58 -->
+    <section class="slide" data-n="58">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 정규분포와 그 응용</h2>
+        <hr class="rule">
+        <h3 class="subtitle">정규분포의 응용</h3>
+        <h4 class="lead">수능 등급제와 표준정규분포 확률 영역</h4>
+        <div class="media-row">
+          <figure class="media"><img src="img/s058_01.png" alt="등급 비율 표"></figure>
+          <figure class="media"><img src="img/s058_02.png" alt="등급 경계선 시각화"></figure>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">58</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 59: 제3강 중간 표지 -->
+    <section class="slide section-divider" data-n="59">
+      <div class="divider-card">
+        <span class="divider-badge">LECTURE 03</span>
+        <h2 class="divider-title">통계로 어떻게 추측하고, 판단할까</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">표본추출과 통계적 추정 · 가설검정의 원리와 판단</p>
+      </div>
+      <footer class="slide-foot"><span>제3강 통계로 어떻게 추측하고, 판단할까</span><span class="pageno">59</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 60: 제3강 1단원 중간 표지 -->
+    <section class="slide section-divider" data-n="60">
+      <div class="divider-card">
+        <span class="divider-badge">PART 01</span>
+        <h2 class="divider-title">세상을 어떻게 추측할까</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">모집단과 표본 · 통계적 추론의 기본 체계</p>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">60</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 61 -->
+    <section class="slide" data-n="61">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">측정의 시대</h3>
+        <ul class="bullets">
+          <li>18~19세기 유럽: 온갖 사회·자연 현상을 실측하여 수치화</li>
+          <li class="lv1">관측 데이터를 체계적으로 수집했을 때 정규분포 양상을 확인</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">61</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 62 -->
+    <section class="slide" data-n="62">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 시작</h3>
+        <ul class="bullets">
+          <li>골턴(Galton), 피어슨(Pearson)에 의해 통계학 체계화</li>
+          <li class="lv1">런던대(UCL) 세계 최초 통계학과 설립</li>
+          <li class="lv1">세계 최초 통계학술지 &lt;Biometrika&gt; 창간</li>
+        </ul>
+        <figure class="media"><img src="img/s062_01.jpg" alt="Biometrika 잡지 표지"></figure>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">62</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 63 -->
+    <section class="slide" data-n="63">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 출발점</h3>
+        <ul class="bullets">
+          <li><strong>모집단(Population)</strong>: 연구 및 관심의 대상이 되는 전체 집단</li>
+          <li><strong>표본(Sample)</strong>: 모집단에서 실제로 추출하여 관측한 데이터</li>
+          <li class="lv1">표본 데이터를 요약하여 모집단의 모수(Parameter)를 추측</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">63</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 64 -->
+    <section class="slide" data-n="64">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 추론의 구분</h3>
+        <ul class="bullets">
+          <li><strong>통계적 추정(Estimation)</strong>: 표본의 정보를 이용하여 미지의 모수를 수치로 추정</li>
+          <li><strong>가설검정(Hypothesis Test)</strong>: 모수에 대한 잠정적 주장을 세운 후 표본의 유의성을 판정</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">64</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 65 -->
+    <section class="slide" data-n="65">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 추정의 예시</h3>
+        <ul class="bullets">
+          <li>고3 학생 평균 키 추정</li>
+          <li class="lv1">모집단: 전국 고등학교 3학년 학생 전체</li>
+          <li class="lv1">표본: 표본 추출된 1,000명의 학생</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">65</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 66 -->
+    <section class="slide" data-n="66">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 추론의 전체 흐름</h3>
+        <h4 class="lead">모집단 ➔ 표본추출 ➔ 자료분석 ➔ 통계적 추론</h4>
+        <ul class="bullets">
+          <li>표본에서 도출된 통계량을 기초로 오차 한계를 계산하여 모집단 특성을 귀납적으로 판단</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">66</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 67: 제3강 2단원 중간 표지 -->
+    <section class="slide section-divider" data-n="67">
+      <div class="divider-card">
+        <span class="divider-badge">PART 02</span>
+        <h2 class="divider-title">통계학의 등장과 발전</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">통계학의 역사적 발전 단계 · 수리통계학의 정립과 데이터과학</p>
+      </div>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">67</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 68 -->
+    <section class="slide" data-n="68">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 시대별 흐름</h3>
+        <ul class="bullets">
+          <li><strong>17~18세기</strong>: 확률의 시대 (Pascal, Bernoulli, Bayes)</li>
+          <li><strong>18세기 중~19세기 중</strong>: 오차이론의 시대 (Laplace, Gauss)</li>
+          <li><strong>19세기 후반</strong>: 응용통계의 태동 (Quetelet, Galton)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">68</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 69 -->
+    <section class="slide" data-n="69">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
+        <hr class="rule">
+        <h3 class="subtitle">현대 통계학의 수리적 정립</h3>
+        <ul class="bullets">
+          <li>K. Pearson: 카이제곱 검정 (1900)</li>
+          <li>Gosset: 소표본 t분포 (1908)</li>
+          <li>R. A. Fisher: 실험계획법, 최대가능도추정법, 분산분석 (1920s)</li>
+          <li>Neyman &amp; Pearson: 가설검정론, 신뢰구간 (1930s)</li>
+          <li>Wald: 통계적 결정이론 (1950)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">69</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 70 -->
+    <section class="slide" data-n="70">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학 패러다임의 변천</h3>
+        <figure class="media"><img src="img/s070_01.png" alt="통계학의 역사 다이어그램"></figure>
+      </div>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">70</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 71 -->
+    <section class="slide" data-n="71">
+      <div class="slide-body">
+        <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학과 데이터과학</h3>
+        <ul class="bullets">
+          <li>1960년대 컴퓨팅의 도입과 탐색적 데이터 분석(EDA)</li>
+          <li>빅데이터와 기계학습(Machine Learning)의 결합</li>
+          <li>수학적 연역 모형에서 대규모 데이터 기반의 알고리즘적 예측 모형으로 진화</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">71</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 72: 제3강 3단원 중간 표지 -->
+    <section class="slide section-divider" data-n="72">
+      <div class="divider-card">
+        <span class="divider-badge">PART 03</span>
+        <h2 class="divider-title">좋은 추측법은 무엇인가</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">통계적 추론의 가정과 원리 · 점추정과 구간추정</p>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">72</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 73 -->
+    <section class="slide" data-n="73">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 기본 전제</h3>
+        <ul class="bullets">
+          <li>세상은 근본적으로 불확실하다. → 확률분포</li>
+          <li>세상을 모두 측정할 수 없다. → 표본추출</li>
+        </ul>
+        <p class="body">→ <strong>통계적 추론</strong></p>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">73</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 74 -->
+    <section class="slide" data-n="74">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 추론의 양대 축</h3>
+        <ul class="bullets">
+          <li><strong>추정</strong>: 표본의 관측 데이터로부터 모수를 가장 그럴듯하게 계산</li>
+          <li><strong>검정</strong>: 세운 가설 하에서 관측된 결과가 발생할 확률이 극히 낮다면 기존 가설을 기각</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">74</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 75 -->
+    <section class="slide" data-n="75">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 추정과 최적의 통계량</h3>
+        <ul class="bullets">
+          <li>모집단의 모수를 가장 오차 없이 설명할 수 있는 표본 통계량 선정</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">75</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 76 -->
+    <section class="slide" data-n="76">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">바람직한 추정량의 조건</h3>
+        <ul class="bullets">
+          <li><strong>불편성(Unbiasedness)</strong>: 추정량의 기댓값이 참된 모수와 일치</li>
+          <li><strong>효율성(Efficiency)</strong>: 여러 불편추정량 중 분산이 가장 작음</li>
+          <li><strong>일치성(Consistency)</strong>: 표본 크기가 무한히 커질수록 모수에 수렴</li>
+        </ul>
+        <figure class="media"><img src="img/s076_01.png" alt="불편성과 효율성 도표"></figure>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">76</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 77 -->
+    <section class="slide" data-n="77">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">최대가능도법 (Maximum Likelihood)</h3>
+        <ul class="bullets">
+          <li>가능도 함수를 최대화하는 추정량을 찾음</li>
+          <li>정규분포 모평균: 최대가능도 추정량 = 표본평균</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">77</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 78 -->
+    <section class="slide" data-n="78">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">점추정과 구간추정</h3>
+        <ul class="bullets">
+          <li><strong>점추정</strong>: 모수의 단일한 대표값 제시</li>
+          <li><strong>구간추정</strong>: 신뢰수준(예: 95%) 하에서 모수를 포함할 것으로 기대되는 오차 구간 계산</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">78</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 79 -->
+    <section class="slide" data-n="79">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">여론조사의 통계적 해석</h3>
+        <ul class="bullets">
+          <li>전국 성인 1,000명 설문조사 결과</li>
+          <li class="lv1">점추정: 지지율 42%</li>
+          <li class="lv1">표본오차: ±3.1%p (95% 신뢰수준)</li>
+          <li class="lv1">구간추정: 95% 신뢰구간 (38.9%, 45.1%)</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">79</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 80: 제3강 4단원 중간 표지 -->
+    <section class="slide section-divider" data-n="80">
+      <div class="divider-card">
+        <span class="divider-badge">PART 04</span>
+        <h2 class="divider-title">가설검정</h2>
+        <div class="divider-rule"></div>
+        <p class="divider-desc">가설설정 · 오류의 종류 · 유의확률과 판정 절차</p>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">80</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 81 -->
+    <section class="slide" data-n="81">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">가설의 설정</h3>
+        <ul class="bullets">
+          <li><strong>귀무가설(H<sub>0</sub>)</strong>: 기존의 사실 또는 차이가 없다는 영가설</li>
+          <li><strong>대립가설(H<sub>1</sub>)</strong>: 표본을 통해 입증하고자 하는 새로운 주장</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">81</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 82 -->
+    <section class="slide" data-n="82">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">법정 재판과 가설검정의 비유</h3>
+        <ul class="bullets">
+          <li>귀무가설 = "피고인은 무죄이다" (무죄추정의 원칙)</li>
+          <li>대립가설 = "피고인은 유죄이다"</li>
+          <li>합리적 의심을 배제할 정도로 명백한 증거가 제시될 때만 유죄 선고</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">82</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 83 -->
+    <section class="slide" data-n="83">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">가설검정의 오류</h3>
+        <table class="tbl">
+          <thead>
+            <tr><th>구분</th><th>귀무가설 참 (무죄)</th><th>귀무가설 거짓 (유죄)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>귀무가설 채택</strong> (무죄 방면)</td><td>올바른 판결</td><td><strong>제2종 오류 (β)</strong></td></tr>
+            <tr><td><strong>귀무가설 기각</strong> (유죄 처벌)</td><td><strong>제1종 오류 (α)</strong></td><td>올바른 판결 (검정력)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">83</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 84 -->
+    <section class="slide" data-n="84">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">이노센스 프로젝트</h3>
+        <ul class="bullets">
+          <li>DNA 감식을 통해 억울한 사형수·수형자의 무죄 입증</li>
+          <li>제1종 오류(무고한 사람을 유죄로 처벌) 발생의 위험성을 경고</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">84</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 85 -->
+    <section class="slide" data-n="85">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">유의수준의 결정</h3>
+        <ul class="bullets">
+          <li>"100명의 범인을 놓치더라도 한 명의 무고한 자를 처벌해서는 안 된다."</li>
+          <li>제1종 오류의 최대 허용 한계인 <strong>유의수준(α, 대개 5% 또는 1%)</strong>을 먼저 정하고, 그 안에서 제2종 오류를 줄이는 검정법</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">85</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 86 -->
+    <section class="slide" data-n="86">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 가설검정의 4단계 절차</h3>
+        <ol class="bullets">
+          <li>가설 수립 (귀무가설 vs 대립가설)</li>
+          <li>유의수준(α) 설정 및 검정통계량 결정</li>
+          <li>표본 관측치 대입을 통한 검정통계량 및 유의확률(p-value) 계산</li>
+          <li>기각역 비교를 통한 통계적 결론 도출</li>
+        </ol>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">86</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 87 -->
+    <section class="slide" data-n="87">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">유의확률 (p-value)의 해석</h3>
+        <ul class="bullets">
+          <li><strong>p-value &lt; α</strong>: 귀무가설 하에서 관측된 표본이 나타날 확률이 극히 희박함 → 귀무가설 기각</li>
+          <li><strong>p-value ≥ α</strong>: 관측된 차이가 단순한 표본오차 수준일 수 있음 → 귀무가설 기각 실패</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">87</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 88 -->
+    <section class="slide" data-n="88">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">동전 던지기 검정 예제</h3>
+        <ul class="bullets">
+          <li>H<sub>0</sub>: 동전이 공평하다 (p = 0.5)</li>
+          <li>H<sub>1</sub>: 동전이 편향되어 있다 (p ≠ 0.5)</li>
+          <li class="lv1">10회 던져 10회 모두 앞면 관측 (p-value = (1/2)<sup>10</sup> ≈ 0.001)</li>
+          <li class="lv1">유의수준 5%보다 훨씬 낮으므로 공평하다는 귀무가설 기각</li>
+        </ul>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">88</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 89 -->
+    <section class="slide" data-n="89">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">스포크 박사 사건의 배경</h3>
+        <ul class="bullets">
+          <li>1968년 미국 베트남전쟁 당시, 육아 분야의 권위자 스포크 박사가 징병 반대 운동으로 기소</li>
+          <li class="lv1">당시 보스턴 관할 여성 유권자 비율이 과반에 달함에도 불구하고 12명의 최종 배심원에 여성이 0명 선정</li>
+        </ul>
+        <figure class="media"><img src="img/s090_01.jpg" alt="Benjamin Spock"></figure>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">89</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 90 -->
+    <section class="slide" data-n="90">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">배심원 선정의 공정성 검정</h3>
+        <figure class="media"><img src="img/s092_01.png" alt="공정성"></figure>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">90</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 91 -->
+    <section class="slide" data-n="91">
+      <div class="slide-body">
+        <h2 class="slide-title">통계적으로 생각하는 법</h2>
+        <hr class="rule">
+        <h3 class="subtitle">유튜브 영상</h3>
+        <div class="media-row">
+          <figure class="media"><img src="img/s093_02.png" alt="분석 결과 1"></figure>
+          <figure class="media"><img src="img/s093_01.png" alt="분석 결과 2"></figure>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>통계적 판단 요약</span><span class="pageno">91</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+  </div>
+</main>
+
+<!-- Bottom Controls Toolbar -->
+<nav id="bar">
+  <button id="outlineBtn" title="목차 열기/닫기">≡ 목차</button>
+  <button id="prev" title="이전 (←)">◀ 이전</button>
+  <span id="counter"><input id="cur" inputmode="numeric" value="1"> / <span id="total">91</span></span>
+  <button id="next" title="다음 (→)">다음 ▶</button>
+
+  <span class="spacer"></span>
+
+  <div class="group">
+    <button id="pen">🖊️ 펜 필기</button>
+    <div id="penTools" class="group hidden">
+      <button class="swatch on" data-color="#e02424" style="background:#e02424;"></button>
+      <button class="swatch" data-color="#1d4ed8" style="background:#1d4ed8;"></button>
+      <button class="swatch" data-color="#111827" style="background:#111827;"></button>
+      <button id="clear">🧹 지우기</button>
+    </div>
+  </div>
+
+  <button id="pdfBtn">🖨️ 인쇄 / PDF</button>
+  <button id="fullBtn">⛶ 전체화면</button>
+</nav>
+
+<!-- Table of Contents Drawer -->
+<div id="outline"></div>
+
+<script>
+  // Presentation Controller
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const totalSlides = slides.length;
+  let currentIdx = 0;
+
+  const curInput = document.getElementById('cur');
+  const totalSpan = document.getElementById('total');
+  const outline = document.getElementById('outline');
+  totalSpan.textContent = totalSlides;
+
+  // Render Outline
+  slides.forEach((sl, idx) => {
+    const title = sl.querySelector('.slide-title, .divider-title, .cover-main-title')?.innerText.replace(/\n/g, ' ') || `슬라이드 ${idx + 1}`;
+    const item = document.createElement('div');
+    item.className = 'outline-item';
+    item.textContent = `${idx + 1}. ${title}`;
+    item.onclick = () => { goToSlide(idx); outline.classList.remove('open'); };
+    outline.appendChild(item);
+  });
+
+  function updateSlide(idx) {
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    curInput.value = idx + 1;
+    document.querySelectorAll('.outline-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+    currentIdx = idx;
+    setupCanvas();
+  }
+
+  function goToSlide(n) {
+    if (n >= 0 && n < totalSlides) updateSlide(n);
+  }
+
+  // Navigation Listeners
+  document.getElementById('prev').onclick = () => goToSlide(currentIdx - 1);
+  document.getElementById('next').onclick = () => goToSlide(currentIdx + 1);
+  curInput.onchange = (e) => {
+    const v = parseInt(e.target.value) - 1;
+    if (!isNaN(v)) goToSlide(Math.max(0, Math.min(totalSlides - 1, v)));
+  };
+
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'Space', 'PageDown'].includes(e.code)) goToSlide(currentIdx + 1);
+    if (['ArrowLeft', 'PageUp'].includes(e.code)) goToSlide(currentIdx - 1);
+  });
+
+  // Responsive Viewport Scale (16:9 유지)
+  const stage = document.getElementById('stage');
+  function resizeStage() {
+    const vp = document.getElementById('viewport');
+    const scale = Math.min((vp.clientWidth - 32) / 1280, (vp.clientHeight - 32) / 720);
+    stage.style.transform = `scale(${Math.max(0.2, scale)})`;
+  }
+  window.addEventListener('resize', resizeStage);
+  resizeStage();
+
+  // Outline Toggle
+  document.getElementById('outlineBtn').onclick = () => outline.classList.toggle('open');
+
+  // Fullscreen
+  document.getElementById('fullBtn').onclick = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
+  // PDF Print Trigger
+  document.getElementById('pdfBtn').onclick = () => window.print();
+
+  // Canvas Ink Drawing Feature
+  let isDrawingMode = false;
+  let currentColor = '#e02424';
+  const penBtn = document.getElementById('pen');
+  const penTools = document.getElementById('penTools');
+
+  penBtn.onclick = () => {
+    isDrawingMode = !isDrawingMode;
+    document.body.classList.toggle('drawing-active', isDrawingMode);
+    penBtn.classList.toggle('active', isDrawingMode);
+    penTools.classList.toggle('hidden', !isDrawingMode);
+  };
+
+  document.querySelectorAll('.swatch').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('on'));
+      btn.classList.add('on');
+      currentColor = btn.getAttribute('data-color');
+    };
+  });
+
+  function setupCanvas() {
+    const activeSlide = slides[currentIdx];
+    const canvas = activeSlide.querySelector('canvas.ink');
+    if (!canvas || canvas.dataset.ready) return;
+
+    canvas.width = 1280;
+    canvas.height = 720;
+    const ctx = canvas.getContext('2d');
+    let painting = false;
+
+    function getCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    canvas.onmousedown = (e) => {
+      if (!isDrawingMode) return;
+      painting = true;
+      ctx.beginPath();
+      const {x, y} = getCoords(e);
+      ctx.moveTo(x, y);
+    };
+
+    canvas.onmousemove = (e) => {
+      if (!painting || !isDrawingMode) return;
+      const {x, y} = getCoords(e);
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    };
+
+    window.addEventListener('mouseup', () => painting = false);
+    canvas.dataset.ready = "true";
+  }
+
+  document.getElementById('clear').onclick = () => {
+    const activeSlide = slides[currentIdx];
+    const canvas = activeSlide.querySelector('canvas.ink');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
+  // Initial load
+  updateSlide(0);
+</script>
+</body>
+</html>
