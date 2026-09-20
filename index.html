@@ -312,6 +312,8 @@
   .drawing-active .ink {
     pointer-events: auto;
     cursor: crosshair;
+    touch-action: none;        /* 펜/터치 입력이 스크롤·확대로 가로채이지 않게 */
+    -ms-touch-action: none;
   }
 
   /* Controls Navigation Bar */
@@ -1927,6 +1929,7 @@
   // Canvas Ink Drawing Feature
   let isDrawingMode = false;
   let currentColor = '#e02424';
+  let penSeen = false;   // 스타일러스가 한 번이라도 인식되면 터치는 팜 리젝션
   const penBtn = document.getElementById('pen');
   const penTools = document.getElementById('penTools');
 
@@ -1965,25 +1968,60 @@
       };
     }
 
-    canvas.onmousedown = (e) => {
-      if (!isDrawingMode) return;
-      painting = true;
-      ctx.beginPath();
-      const {x, y} = getCoords(e);
-      ctx.moveTo(x, y);
-    };
+    // 펜 필압 -> 선 굵기 (마우스는 pressure가 0 또는 0.5로 들어오므로 기본값 사용)
+    function widthOf(e) {
+      if (e.pointerType === 'pen' && e.pressure > 0) {
+        return 1.2 + e.pressure * 4.5;
+      }
+      return 3;
+    }
 
-    canvas.onmousemove = (e) => {
-      if (!painting || !isDrawingMode) return;
+    function drawTo(e) {
       const {x, y} = getCoords(e);
       ctx.strokeStyle = currentColor;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = widthOf(e);
       ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.lineTo(x, y);
       ctx.stroke();
-    };
+      // 필압에 따라 굵기가 바뀌므로 매 구간을 새 경로로 이어간다
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
 
-    window.addEventListener('mouseup', () => painting = false);
+    canvas.addEventListener('pointerdown', (e) => {
+      if (!isDrawingMode) return;
+      // 펜이 감지되면 손바닥(터치) 입력은 무시 — 팜 리젝션
+      if (e.pointerType === 'touch' && penSeen) return;
+      if (e.pointerType === 'pen') penSeen = true;
+      e.preventDefault();
+      canvas.setPointerCapture(e.pointerId);   // 캔버스 밖으로 나가도 획이 끊기지 않음
+      painting = true;
+      const {x, y} = getCoords(e);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!painting || !isDrawingMode) return;
+      e.preventDefault();
+      // 고주사율 펜에서 누락된 중간 점까지 복원해 부드럽게
+      const events = (typeof e.getCoalescedEvents === 'function') ? e.getCoalescedEvents() : [e];
+      for (const ev of events) drawTo(ev);
+    });
+
+    function endStroke(e) {
+      if (!painting) return;
+      painting = false;
+      ctx.beginPath();
+      if (e && e.pointerId != null && canvas.hasPointerCapture(e.pointerId)) {
+        canvas.releasePointerCapture(e.pointerId);
+      }
+    }
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
+    canvas.addEventListener('pointerleave', endStroke);
+
     canvas.dataset.ready = "true";
   }
 
