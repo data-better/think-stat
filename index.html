@@ -312,8 +312,6 @@
   .drawing-active .ink {
     pointer-events: auto;
     cursor: crosshair;
-    touch-action: none;        /* 펜/터치 입력이 스크롤·확대로 가로채이지 않게 */
-    -ms-touch-action: none;
   }
 
   /* Controls Navigation Bar */
@@ -408,11 +406,43 @@
 
   /* Print Support */
   @media print {
-    body { overflow: visible; height: auto; background: #fff; }
-    #viewport { display: block; padding: 0; }
-    #stage { width: 100% !important; height: auto !important; transform: none !important; box-shadow: none; }
-    .slide { display: flex !important; position: relative; page-break-after: always; height: 100vh; border-bottom: none; }
-    #bar, #outline, .ink { display: none !important; }
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    html, body {
+      overflow: visible !important;
+      height: auto !important;
+      background: #ffffff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    #viewport {
+      display: block !important;
+      padding: 0 !important;
+      overflow: visible !important;
+    }
+    #stage {
+      width: 100% !important;
+      height: auto !important;
+      transform: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+    }
+    .slide {
+      display: flex !important;
+      position: relative !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      page-break-after: always;
+      break-after: page;
+      box-sizing: border-box;
+      padding: 48px 64px 36px 64px;
+    }
+    #bar, #outline, .ink {
+      display: none !important;
+    }
   }
 </style>
 </head>
@@ -477,10 +507,10 @@
       <div class="slide-body">
         <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
         <hr class="rule">
-        <h3 class="subtitle">빅데이터 시대</h3>
+        <h3 class="subtitle">2차세계대전의 전투기 보완 문제</h3>
+         <figure class="media"><img src="img/wald.png" alt="전투기"></figure>
         <ul class="bullets">
-          <li>우리의 일상생활은 스마트 기기나 센서 등을 통해 측정되어 데이터로 축적, 정리</li>
-          → <strong>빅데이터 시대</strong>
+          <li>2차세계대전 Wald의 분석 : 통계적 사고 </li>
         </ul>
       </div>
       <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">5</span></footer>
@@ -492,12 +522,13 @@
       <div class="slide-body">
         <h2 class="slide-title">1. 통계와 통계학은 무엇인가</h2>
         <hr class="rule">
-        <h3 class="subtitle">데이터</h3>
+        <h3 class="subtitle">데이터 홍수의 시대</h3>
         <ul class="bullets">
           <li><strong>데이터</strong>: 수집된 원시정보, 단순 사실(fact)</li>
           <li class="lv1">조사: 대상집단 일부를 선정해 조사</li>
           <li class="lv1">실험: 특정 조건을 설정하여 효과 측정</li>
           <li class="lv1">관찰: 행정 보고, 센서 데이터처럼 자동으로 생성된 정보</li>
+          <li><strong>빅데이터 시대</strong>: 우리의 일상생활은 스마트 기기나 센서 등을 통해 측정되어 데이터로 축적, 정리</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">6</span></footer>
@@ -591,6 +622,10 @@
         <ul class="bullets">
           <li><strong>과학철학자 해킹(I. Hacking)</strong></li>
           <li class="lv1">"통계학자는 기술을 발견하여 세상을 바꾼 것이 아니라, 생각하는 방법이나 자기 견해를 내세우는 방법을 변화시켜 세상을 바꾸었다."</li>
+          <li><strong>통계학자 라오(C. R. Rao)</strong></li>
+          <li class="lv1">모든 지식은 잘 분석해 보면 역사</li>
+          <li class="lv1">모든 지식은 추상적으로 보면 수학</li>
+          <li class="lv1">모든 판단은 이의 바탕이 되는 논리적 추론에서 볼 때 통계학</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>1. 통계와 통계학은 무엇인가</span><span class="pageno">11</span></footer>
@@ -872,6 +907,7 @@
           <li>제도적 틀을 유지하고 국민적 합의를 도출하기 위한 국가경영 인프라</li>
           <li>영국 정부의 <strong>통계에서의 신뢰의 구축 보고서</strong></li>
           <li class="lv1"><em>"국가통계는 믿음을 기저로 하는 민주주의 제도에서 핵심적 역할"</em></li>
+          <li>그리스 통계청장 안드레아스 게오르기우의 재판</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>3. 국가통계로 본 우리나라</span><span class="pageno">28</span></footer>
@@ -1142,44 +1178,30 @@
       <div class="slide-body">
         <h2 class="slide-title">2. 조건부 확률과 독립</h2>
         <hr class="rule">
-        <h3 class="subtitle">O.J. 심슨 재판과 조건부 확률</h3>
-        <ul class="bullets">
-          <li>가정 폭력 전력과 살인 사건 간의 올바른 조건부 확률 추론의 중요성</li>
-        </ul>
-      </div>
-      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">46</span></footer>
-      <canvas class="ink"></canvas>
-    </section>
-
-    <!-- SLIDE 47 -->
-    <section class="slide" data-n="47">
-      <div class="slide-body">
-        <h2 class="slide-title">2. 조건부 확률과 독립</h2>
-        <hr class="rule">
         <h3 class="subtitle">독립 (Independence)</h3>
         <ul class="bullets">
           <li>한 사건의 발생이 다른 사건이 일어날 확률에 아무런 영향을 주지 않는 상태</li>
           <li class="lv1">P(A|B) = P(A) 성립 시 두 사건은 상호 독립</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">47</span></footer>
+      <footer class="slide-foot"><span>2. 조건부 확률과 독립</span><span class="pageno">46</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 48: 제2강 3단원 중간 표지 -->
-    <section class="slide section-divider" data-n="48">
+    <!-- SLIDE 47: 제2강 3단원 중간 표지 -->
+    <section class="slide section-divider" data-n="47">
       <div class="divider-card">
         <span class="divider-badge">PART 03</span>
         <h2 class="divider-title">복권과 확률</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">로또 복권의 구조와 당첨 확률 · 확률변수와 기댓값</p>
       </div>
-      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">48</span></footer>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">47</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 49 -->
-    <section class="slide" data-n="49">
+    <!-- SLIDE 48 -->
+    <section class="slide" data-n="48">
       <div class="slide-body">
         <h2 class="slide-title">3. 복권과 확률</h2>
         <hr class="rule">
@@ -1191,12 +1213,12 @@
           <li class="lv1">1~5등 전체 당첨 확률 합계: 약 2.36%</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">49</span></footer>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">48</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 50 -->
-    <section class="slide" data-n="50">
+    <!-- SLIDE 49 -->
+    <section class="slide" data-n="49">
       <div class="slide-body">
         <h2 class="slide-title">3. 복권과 확률</h2>
         <hr class="rule">
@@ -1207,12 +1229,12 @@
           <li>로또 명당의 실체: 단순 판매량이 많은 매장</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">50</span></footer>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">49</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 51 -->
-    <section class="slide" data-n="51">
+    <!-- SLIDE 50 -->
+    <section class="slide" data-n="50">
       <div class="slide-body">
         <h2 class="slide-title">3. 복권과 확률</h2>
         <hr class="rule">
@@ -1223,12 +1245,12 @@
         </ul>
         <figure class="media"><img src="img/s051_01.png" alt="로또 기댓값 표"></figure>
       </div>
-      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">51</span></footer>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">50</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 52 -->
-    <section class="slide" data-n="52">
+    <!-- SLIDE 51 -->
+    <section class="slide" data-n="51">
       <div class="slide-body">
         <h2 class="slide-title">3. 복권과 확률</h2>
         <hr class="rule">
@@ -1239,12 +1261,12 @@
           <li class="lv1"><strong>연속형 확률변수</strong>: 특정 구간 내 모든 실수값을 취할 수 있는 변수 (키, 몸무게, 시간 등)</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">52</span></footer>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">51</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 53 -->
-    <section class="slide" data-n="53">
+    <!-- SLIDE 52 -->
+    <section class="slide" data-n="52">
       <div class="slide-body">
         <h2 class="slide-title">3. 복권과 확률</h2>
         <hr class="rule">
@@ -1253,24 +1275,24 @@
           <li>확률변수가 가질 수 있는 값들에 해당 확률을 가중치로 곱하여 합산한 무게중심</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">53</span></footer>
+      <footer class="slide-foot"><span>3. 복권과 확률</span><span class="pageno">52</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 54: 제2강 4단원 중간 표지 -->
-    <section class="slide section-divider" data-n="54">
+    <!-- SLIDE 53: 제2강 4단원 중간 표지 -->
+    <section class="slide section-divider" data-n="53">
       <div class="divider-card">
         <span class="divider-badge">PART 04</span>
         <h2 class="divider-title">정규분포와 그 응용</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">정규분포의 성질 · 중심극한정리 · 교육 평가 응용</p>
       </div>
-      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">54</span></footer>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">53</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 55 -->
-    <section class="slide" data-n="55">
+    <!-- SLIDE 54 -->
+    <section class="slide" data-n="54">
       <div class="slide-body">
         <h2 class="slide-title">4. 정규분포와 그 응용</h2>
         <hr class="rule">
@@ -1282,6 +1304,21 @@
         </ul>
         <figure class="media"><img src="img/s055_01.png" alt="정규분포 발견"></figure>
       </div>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">54</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 55 -->
+    <section class="slide" data-n="55">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 정규분포와 그 응용</h2>
+        <hr class="rule">
+        <h3 class="subtitle">정규분포의 형태와 특성</h3>
+        <div class="media-row">
+          <figure class="media"><img src="img/s056_01.png" alt="정규분포 곡선"></figure>
+          <figure class="media"><img src="img/s056_02.png" alt="표준정규분포"></figure>
+        </div>
+      </div>
       <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">55</span></footer>
       <canvas class="ink"></canvas>
     </section>
@@ -1291,11 +1328,11 @@
       <div class="slide-body">
         <h2 class="slide-title">4. 정규분포와 그 응용</h2>
         <hr class="rule">
-        <h3 class="subtitle">정규분포의 형태와 특성</h3>
-        <div class="media-row">
-          <figure class="media"><img src="img/s056_01.png" alt="정규분포 곡선"></figure>
-          <figure class="media"><img src="img/s056_02.png" alt="표준정규분포"></figure>
-        </div>
+        <h3 class="subtitle">중심극한정리</h3>
+        <ul class="bullets">
+          <li>모집단의 분포 형태에 관계없이 표본 크기(n)가 충분히 크면 표본평균의 분포는 정규분포에 근사</li>
+          <li class="lv1">통계적 추론의 수학적 기반 제공</li>
+        </ul>
       </div>
       <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">56</span></footer>
       <canvas class="ink"></canvas>
@@ -1306,21 +1343,6 @@
       <div class="slide-body">
         <h2 class="slide-title">4. 정규분포와 그 응용</h2>
         <hr class="rule">
-        <h3 class="subtitle">중심극한정리</h3>
-        <ul class="bullets">
-          <li>모집단의 분포 형태에 관계없이 표본 크기(n)가 충분히 크면 표본평균의 분포는 정규분포에 근사</li>
-          <li class="lv1">통계적 추론의 수학적 기반 제공</li>
-        </ul>
-      </div>
-      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">57</span></footer>
-      <canvas class="ink"></canvas>
-    </section>
-
-    <!-- SLIDE 58 -->
-    <section class="slide" data-n="58">
-      <div class="slide-body">
-        <h2 class="slide-title">4. 정규분포와 그 응용</h2>
-        <hr class="rule">
         <h3 class="subtitle">정규분포의 응용</h3>
         <h4 class="lead">수능 등급제와 표준정규분포 확률 영역</h4>
         <div class="media-row">
@@ -1328,36 +1350,36 @@
           <figure class="media"><img src="img/s058_02.png" alt="등급 경계선 시각화"></figure>
         </div>
       </div>
-      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">58</span></footer>
+      <footer class="slide-foot"><span>4. 정규분포와 그 응용</span><span class="pageno">57</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 59: 제3강 중간 표지 -->
-    <section class="slide section-divider" data-n="59">
+    <!-- SLIDE 58: 제3강 중간 표지 -->
+    <section class="slide section-divider" data-n="58">
       <div class="divider-card">
         <span class="divider-badge">LECTURE 03</span>
         <h2 class="divider-title">통계로 어떻게 추측하고, 판단할까</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">표본추출과 통계적 추정 · 가설검정의 원리와 판단</p>
       </div>
-      <footer class="slide-foot"><span>제3강 통계로 어떻게 추측하고, 판단할까</span><span class="pageno">59</span></footer>
+      <footer class="slide-foot"><span>제3강 통계로 어떻게 추측하고, 판단할까</span><span class="pageno">58</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 60: 제3강 1단원 중간 표지 -->
-    <section class="slide section-divider" data-n="60">
+    <!-- SLIDE 59: 제3강 1단원 중간 표지 -->
+    <section class="slide section-divider" data-n="59">
       <div class="divider-card">
         <span class="divider-badge">PART 01</span>
         <h2 class="divider-title">세상을 어떻게 추측할까</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">모집단과 표본 · 통계적 추론의 기본 체계</p>
       </div>
-      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">60</span></footer>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">59</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 61 -->
-    <section class="slide" data-n="61">
+    <!-- SLIDE 60 -->
+    <section class="slide" data-n="60">
       <div class="slide-body">
         <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
         <hr class="rule">
@@ -1367,12 +1389,12 @@
           <li class="lv1">관측 데이터를 체계적으로 수집했을 때 정규분포 양상을 확인</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">61</span></footer>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">60</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 62 -->
-    <section class="slide" data-n="62">
+    <!-- SLIDE 61 -->
+    <section class="slide" data-n="61">
       <div class="slide-body">
         <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
         <hr class="rule">
@@ -1384,6 +1406,22 @@
         </ul>
         <figure class="media"><img src="img/s062_01.jpg" alt="Biometrika 잡지 표지"></figure>
       </div>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">61</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 62 -->
+    <section class="slide" data-n="62">
+      <div class="slide-body">
+        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계학의 출발점</h3>
+        <ul class="bullets">
+          <li><strong>모집단(Population)</strong>: 연구 및 관심의 대상이 되는 전체 집단</li>
+          <li><strong>표본(Sample)</strong>: 모집단에서 실제로 추출하여 관측한 데이터</li>
+          <li class="lv1">표본 데이터를 요약하여 모집단의 모수(Parameter)를 추측</li>
+        </ul>
+      </div>
       <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">62</span></footer>
       <canvas class="ink"></canvas>
     </section>
@@ -1393,11 +1431,10 @@
       <div class="slide-body">
         <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
         <hr class="rule">
-        <h3 class="subtitle">통계학의 출발점</h3>
+        <h3 class="subtitle">통계적 추론의 구분</h3>
         <ul class="bullets">
-          <li><strong>모집단(Population)</strong>: 연구 및 관심의 대상이 되는 전체 집단</li>
-          <li><strong>표본(Sample)</strong>: 모집단에서 실제로 추출하여 관측한 데이터</li>
-          <li class="lv1">표본 데이터를 요약하여 모집단의 모수(Parameter)를 추측</li>
+          <li><strong>통계적 추정(Estimation)</strong>: 표본의 정보를 이용하여 미지의 모수를 수치로 추정</li>
+          <li><strong>가설검정(Hypothesis Test)</strong>: 모수에 대한 잠정적 주장을 세운 후 표본의 유의성을 판정</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">63</span></footer>
@@ -1409,10 +1446,11 @@
       <div class="slide-body">
         <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
         <hr class="rule">
-        <h3 class="subtitle">통계적 추론의 구분</h3>
+        <h3 class="subtitle">통계적 추정의 예시</h3>
         <ul class="bullets">
-          <li><strong>통계적 추정(Estimation)</strong>: 표본의 정보를 이용하여 미지의 모수를 수치로 추정</li>
-          <li><strong>가설검정(Hypothesis Test)</strong>: 모수에 대한 잠정적 주장을 세운 후 표본의 유의성을 판정</li>
+          <li>고3 학생 평균 키 추정</li>
+          <li class="lv1">모집단: 전국 고등학교 3학년 학생 전체</li>
+          <li class="lv1">표본: 표본 추출된 1,000명의 학생</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">64</span></footer>
@@ -1424,45 +1462,29 @@
       <div class="slide-body">
         <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
         <hr class="rule">
-        <h3 class="subtitle">통계적 추정의 예시</h3>
-        <ul class="bullets">
-          <li>고3 학생 평균 키 추정</li>
-          <li class="lv1">모집단: 전국 고등학교 3학년 학생 전체</li>
-          <li class="lv1">표본: 표본 추출된 1,000명의 학생</li>
-        </ul>
-      </div>
-      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">65</span></footer>
-      <canvas class="ink"></canvas>
-    </section>
-
-    <!-- SLIDE 66 -->
-    <section class="slide" data-n="66">
-      <div class="slide-body">
-        <h2 class="slide-title">1. 세상을 어떻게 추측할까</h2>
-        <hr class="rule">
         <h3 class="subtitle">통계적 추론의 전체 흐름</h3>
         <h4 class="lead">모집단 ➔ 표본추출 ➔ 자료분석 ➔ 통계적 추론</h4>
         <ul class="bullets">
           <li>표본에서 도출된 통계량을 기초로 오차 한계를 계산하여 모집단 특성을 귀납적으로 판단</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">66</span></footer>
+      <footer class="slide-foot"><span>1. 세상을 어떻게 추측할까</span><span class="pageno">65</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 67: 제3강 2단원 중간 표지 -->
-    <section class="slide section-divider" data-n="67">
+    <!-- SLIDE 66: 제3강 2단원 중간 표지 -->
+    <section class="slide section-divider" data-n="66">
       <div class="divider-card">
         <span class="divider-badge">PART 02</span>
         <h2 class="divider-title">통계학의 등장과 발전</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">통계학의 역사적 발전 단계 · 수리통계학의 정립과 데이터과학</p>
       </div>
-      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">67</span></footer>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">66</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 68 -->
+    <!-- SLIDE 67 -->
     <section class="slide" data-n="68">
       <div class="slide-body">
         <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
@@ -1474,12 +1496,12 @@
           <li><strong>19세기 후반</strong>: 응용통계의 태동 (Quetelet, Galton)</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">68</span></footer>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">67</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 69 -->
-    <section class="slide" data-n="69">
+    <!-- SLIDE 68 -->
+    <section class="slide" data-n="68">
       <div class="slide-body">
         <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
         <hr class="rule">
@@ -1492,24 +1514,24 @@
           <li>Wald: 통계적 결정이론 (1950)</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">69</span></footer>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">68</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 70 -->
-    <section class="slide" data-n="70">
+    <!-- SLIDE 69 -->
+    <section class="slide" data-n="69">
       <div class="slide-body">
         <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
         <hr class="rule">
         <h3 class="subtitle">통계학 패러다임의 변천</h3>
         <figure class="media"><img src="img/s070_01.png" alt="통계학의 역사 다이어그램"></figure>
       </div>
-      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">70</span></footer>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">69</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 71 -->
-    <section class="slide" data-n="71">
+    <!-- SLIDE 70 -->
+    <section class="slide" data-n="70">
       <div class="slide-body">
         <h2 class="slide-title">2. 통계학의 등장과 발전</h2>
         <hr class="rule">
@@ -1520,24 +1542,24 @@
           <li>수학적 연역 모형에서 대규모 데이터 기반의 알고리즘적 예측 모형으로 진화</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">71</span></footer>
+      <footer class="slide-foot"><span>2. 통계학의 등장과 발전</span><span class="pageno">70</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 72: 제3강 3단원 중간 표지 -->
-    <section class="slide section-divider" data-n="72">
+    <!-- SLIDE 71: 제3강 3단원 중간 표지 -->
+    <section class="slide section-divider" data-n="71">
       <div class="divider-card">
         <span class="divider-badge">PART 03</span>
         <h2 class="divider-title">좋은 추측법은 무엇인가</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">통계적 추론의 가정과 원리 · 점추정과 구간추정</p>
       </div>
-      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">72</span></footer>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">71</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 73 -->
-    <section class="slide" data-n="73">
+    <!-- SLIDE 72 -->
+    <section class="slide" data-n="72">
       <div class="slide-body">
         <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
         <hr class="rule">
@@ -1548,6 +1570,21 @@
         </ul>
         <p class="body">→ <strong>통계적 추론</strong></p>
       </div>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">72</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 73 -->
+    <section class="slide" data-n="73">
+      <div class="slide-body">
+        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
+        <hr class="rule">
+        <h3 class="subtitle">통계적 추론의 양대 축</h3>
+        <ul class="bullets">
+          <li><strong>추정</strong>: 표본의 관측 데이터로부터 모수를 가장 그럴듯하게 계산</li>
+          <li><strong>검정</strong>: 세운 가설 하에서 관측된 결과가 발생할 확률이 극히 낮다면 기존 가설을 기각</li>
+        </ul>
+      </div>
       <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">73</span></footer>
       <canvas class="ink"></canvas>
     </section>
@@ -1557,10 +1594,9 @@
       <div class="slide-body">
         <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
         <hr class="rule">
-        <h3 class="subtitle">통계적 추론의 양대 축</h3>
+        <h3 class="subtitle">통계적 추정과 최적의 통계량</h3>
         <ul class="bullets">
-          <li><strong>추정</strong>: 표본의 관측 데이터로부터 모수를 가장 그럴듯하게 계산</li>
-          <li><strong>검정</strong>: 세운 가설 하에서 관측된 결과가 발생할 확률이 극히 낮다면 기존 가설을 기각</li>
+          <li>모집단의 모수를 가장 오차 없이 설명할 수 있는 표본 통계량 선정</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">74</span></footer>
@@ -1572,10 +1608,13 @@
       <div class="slide-body">
         <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
         <hr class="rule">
-        <h3 class="subtitle">통계적 추정과 최적의 통계량</h3>
+        <h3 class="subtitle">바람직한 추정량의 조건</h3>
         <ul class="bullets">
-          <li>모집단의 모수를 가장 오차 없이 설명할 수 있는 표본 통계량 선정</li>
+          <li><strong>불편성(Unbiasedness)</strong>: 추정량의 기댓값이 참된 모수와 일치</li>
+          <li><strong>효율성(Efficiency)</strong>: 여러 불편추정량 중 분산이 가장 작음</li>
+          <li><strong>일치성(Consistency)</strong>: 표본 크기가 무한히 커질수록 모수에 수렴</li>
         </ul>
+        <figure class="media"><img src="img/s076_01.png" alt="불편성과 효율성 도표"></figure>
       </div>
       <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">75</span></footer>
       <canvas class="ink"></canvas>
@@ -1586,13 +1625,11 @@
       <div class="slide-body">
         <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
         <hr class="rule">
-        <h3 class="subtitle">바람직한 추정량의 조건</h3>
+        <h3 class="subtitle">최대가능도법 (Maximum Likelihood)</h3>
         <ul class="bullets">
-          <li><strong>불편성(Unbiasedness)</strong>: 추정량의 기댓값이 참된 모수와 일치</li>
-          <li><strong>효율성(Efficiency)</strong>: 여러 불편추정량 중 분산이 가장 작음</li>
-          <li><strong>일치성(Consistency)</strong>: 표본 크기가 무한히 커질수록 모수에 수렴</li>
+          <li>가능도 함수를 최대화하는 추정량을 찾음</li>
+          <li>정규분포 모평균: 최대가능도 추정량 = 표본평균</li>
         </ul>
-        <figure class="media"><img src="img/s076_01.png" alt="불편성과 효율성 도표"></figure>
       </div>
       <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">76</span></footer>
       <canvas class="ink"></canvas>
@@ -1600,21 +1637,6 @@
 
     <!-- SLIDE 77 -->
     <section class="slide" data-n="77">
-      <div class="slide-body">
-        <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
-        <hr class="rule">
-        <h3 class="subtitle">최대가능도법 (Maximum Likelihood)</h3>
-        <ul class="bullets">
-          <li>가능도 함수를 최대화하는 추정량을 찾음</li>
-          <li>정규분포 모평균: 최대가능도 추정량 = 표본평균</li>
-        </ul>
-      </div>
-      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">77</span></footer>
-      <canvas class="ink"></canvas>
-    </section>
-
-    <!-- SLIDE 78 -->
-    <section class="slide" data-n="78">
       <div class="slide-body">
         <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
         <hr class="rule">
@@ -1628,8 +1650,8 @@
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 79 -->
-    <section class="slide" data-n="79">
+    <!-- SLIDE 78 -->
+    <section class="slide" data-n="78">
       <div class="slide-body">
         <h2 class="slide-title">3. 좋은 추측법은 무엇인가</h2>
         <hr class="rule">
@@ -1641,17 +1663,32 @@
           <li class="lv1">구간추정: 95% 신뢰구간 (38.9%, 45.1%)</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">79</span></footer>
+      <footer class="slide-foot"><span>3. 좋은 추측법은 무엇인가</span><span class="pageno">78</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 80: 제3강 4단원 중간 표지 -->
-    <section class="slide section-divider" data-n="80">
+    <!-- SLIDE 79: 제3강 4단원 중간 표지 -->
+    <section class="slide section-divider" data-n="79">
       <div class="divider-card">
         <span class="divider-badge">PART 04</span>
         <h2 class="divider-title">가설검정</h2>
         <div class="divider-rule"></div>
         <p class="divider-desc">가설설정 · 오류의 종류 · 유의확률과 판정 절차</p>
+      </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">79</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 80 -->
+    <section class="slide" data-n="80">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">가설의 설정</h3>
+        <ul class="bullets">
+          <li><strong>귀무가설(H<sub>0</sub>)</strong>: 기존의 사실 또는 차이가 없다는 영가설</li>
+          <li><strong>대립가설(H<sub>1</sub>)</strong>: 표본을 통해 입증하고자 하는 새로운 주장</li>
+        </ul>
       </div>
       <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">80</span></footer>
       <canvas class="ink"></canvas>
@@ -1662,10 +1699,11 @@
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
-        <h3 class="subtitle">가설의 설정</h3>
+        <h3 class="subtitle">법정 재판과 가설검정의 비유</h3>
         <ul class="bullets">
-          <li><strong>귀무가설(H<sub>0</sub>)</strong>: 기존의 사실 또는 차이가 없다는 영가설</li>
-          <li><strong>대립가설(H<sub>1</sub>)</strong>: 표본을 통해 입증하고자 하는 새로운 주장</li>
+          <li>귀무가설 = "피고인은 무죄이다" (무죄추정의 원칙)</li>
+          <li>대립가설 = "피고인은 유죄이다"</li>
+          <li>합리적 의심을 배제할 정도로 명백한 증거가 제시될 때만 유죄 선고</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">81</span></footer>
@@ -1674,22 +1712,6 @@
 
     <!-- SLIDE 82 -->
     <section class="slide" data-n="82">
-      <div class="slide-body">
-        <h2 class="slide-title">4. 가설검정</h2>
-        <hr class="rule">
-        <h3 class="subtitle">법정 재판과 가설검정의 비유</h3>
-        <ul class="bullets">
-          <li>귀무가설 = "피고인은 무죄이다" (무죄추정의 원칙)</li>
-          <li>대립가설 = "피고인은 유죄이다"</li>
-          <li>합리적 의심을 배제할 정도로 명백한 증거가 제시될 때만 유죄 선고</li>
-        </ul>
-      </div>
-      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">82</span></footer>
-      <canvas class="ink"></canvas>
-    </section>
-
-    <!-- SLIDE 83 -->
-    <section class="slide" data-n="83">
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
@@ -1704,6 +1726,21 @@
           </tbody>
         </table>
       </div>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">82</span></footer>
+      <canvas class="ink"></canvas>
+    </section>
+
+    <!-- SLIDE 83 -->
+    <section class="slide" data-n="83">
+      <div class="slide-body">
+        <h2 class="slide-title">4. 가설검정</h2>
+        <hr class="rule">
+        <h3 class="subtitle">이노센스 프로젝트</h3>
+        <ul class="bullets">
+          <li>DNA 감식을 통해 억울한 사형수·수형자의 무죄 입증</li>
+          <li>제1종 오류(무고한 사람을 유죄로 처벌) 발생의 위험성을 경고</li>
+        </ul>
+      </div>
       <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">83</span></footer>
       <canvas class="ink"></canvas>
     </section>
@@ -1713,10 +1750,10 @@
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
-        <h3 class="subtitle">이노센스 프로젝트</h3>
+        <h3 class="subtitle">유의수준의 결정</h3>
         <ul class="bullets">
-          <li>DNA 감식을 통해 억울한 사형수·수형자의 무죄 입증</li>
-          <li>제1종 오류(무고한 사람을 유죄로 처벌) 발생의 위험성을 경고</li>
+          <li>"100명의 범인을 놓치더라도 한 명의 무고한 자를 처벌해서는 안 된다."</li>
+          <li>제1종 오류의 최대 허용 한계인 <strong>유의수준(α, 대개 5% 또는 1%)</strong>을 먼저 정하고, 그 안에서 제2종 오류를 줄이는 검정법</li>
         </ul>
       </div>
       <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">84</span></footer>
@@ -1728,11 +1765,13 @@
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
-        <h3 class="subtitle">유의수준의 결정</h3>
-        <ul class="bullets">
-          <li>"100명의 범인을 놓치더라도 한 명의 무고한 자를 처벌해서는 안 된다."</li>
-          <li>제1종 오류의 최대 허용 한계인 <strong>유의수준(α, 대개 5% 또는 1%)</strong>을 먼저 정하고, 그 안에서 제2종 오류를 줄이는 검정법</li>
-        </ul>
+        <h3 class="subtitle">통계적 가설검정의 4단계 절차</h3>
+        <ol class="bullets">
+          <li>가설 수립 (귀무가설 vs 대립가설)</li>
+          <li>유의수준(α) 설정 및 검정통계량 결정</li>
+          <li>표본 관측치 대입을 통한 검정통계량 및 유의확률(p-value) 계산</li>
+          <li>기각역 비교를 통한 통계적 결론 도출</li>
+        </ol>
       </div>
       <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">85</span></footer>
       <canvas class="ink"></canvas>
@@ -1743,13 +1782,11 @@
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
-        <h3 class="subtitle">통계적 가설검정의 4단계 절차</h3>
-        <ol class="bullets">
-          <li>가설 수립 (귀무가설 vs 대립가설)</li>
-          <li>유의수준(α) 설정 및 검정통계량 결정</li>
-          <li>표본 관측치 대입을 통한 검정통계량 및 유의확률(p-value) 계산</li>
-          <li>기각역 비교를 통한 통계적 결론 도출</li>
-        </ol>
+        <h3 class="subtitle">유의확률 (p-value)의 해석</h3>
+        <ul class="bullets">
+          <li><strong>p-value &lt; α</strong>: 귀무가설 하에서 관측된 표본이 나타날 확률이 극히 희박함 → 귀무가설 기각</li>
+          <li><strong>p-value ≥ α</strong>: 관측된 차이가 단순한 표본오차 수준일 수 있음 → 귀무가설 기각 실패</li>
+        </ul>
       </div>
       <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">86</span></footer>
       <canvas class="ink"></canvas>
@@ -1757,21 +1794,6 @@
 
     <!-- SLIDE 87 -->
     <section class="slide" data-n="87">
-      <div class="slide-body">
-        <h2 class="slide-title">4. 가설검정</h2>
-        <hr class="rule">
-        <h3 class="subtitle">유의확률 (p-value)의 해석</h3>
-        <ul class="bullets">
-          <li><strong>p-value &lt; α</strong>: 귀무가설 하에서 관측된 표본이 나타날 확률이 극히 희박함 → 귀무가설 기각</li>
-          <li><strong>p-value ≥ α</strong>: 관측된 차이가 단순한 표본오차 수준일 수 있음 → 귀무가설 기각 실패</li>
-        </ul>
-      </div>
-      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">87</span></footer>
-      <canvas class="ink"></canvas>
-    </section>
-
-    <!-- SLIDE 88 -->
-    <section class="slide" data-n="88">
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
@@ -1783,12 +1805,12 @@
           <li class="lv1">유의수준 5%보다 훨씬 낮으므로 공평하다는 귀무가설 기각</li>
         </ul>
       </div>
-      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">88</span></footer>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">87</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 89 -->
-    <section class="slide" data-n="89">
+    <!-- SLIDE 88 -->
+    <section class="slide" data-n="88">
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
@@ -1799,24 +1821,24 @@
         </ul>
         <figure class="media"><img src="img/s090_01.jpg" alt="Benjamin Spock"></figure>
       </div>
-      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">89</span></footer>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">88</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 90 -->
-    <section class="slide" data-n="90">
+    <!-- SLIDE 89 -->
+    <section class="slide" data-n="89">
       <div class="slide-body">
         <h2 class="slide-title">4. 가설검정</h2>
         <hr class="rule">
         <h3 class="subtitle">배심원 선정의 공정성 검정</h3>
         <figure class="media"><img src="img/s092_01.png" alt="공정성"></figure>
       </div>
-      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">90</span></footer>
+      <footer class="slide-foot"><span>4. 가설검정</span><span class="pageno">89</span></footer>
       <canvas class="ink"></canvas>
     </section>
 
-    <!-- SLIDE 91 -->
-    <section class="slide" data-n="91">
+    <!-- SLIDE 90 -->
+    <section class="slide" data-n="90">
       <div class="slide-body">
         <h2 class="slide-title">통계적으로 생각하는 법</h2>
         <hr class="rule">
@@ -1826,7 +1848,7 @@
           <figure class="media"><img src="img/s093_01.png" alt="분석 결과 2"></figure>
         </div>
       </div>
-      <footer class="slide-foot"><span>통계적 판단 요약</span><span class="pageno">91</span></footer>
+      <footer class="slide-foot"><span>통계적 판단 요약</span><span class="pageno">90</span></footer>
       <canvas class="ink"></canvas>
     </section>
   </div>
@@ -1836,7 +1858,7 @@
 <nav id="bar">
   <button id="outlineBtn" title="목차 열기/닫기">≡ 목차</button>
   <button id="prev" title="이전 (←)">◀ 이전</button>
-  <span id="counter"><input id="cur" inputmode="numeric" value="1"> / <span id="total">91</span></span>
+  <span id="counter"><input id="cur" inputmode="numeric" value="1"> / <span id="total">90</span></span>
   <button id="next" title="다음 (→)">다음 ▶</button>
 
   <span class="spacer"></span>
@@ -1929,7 +1951,6 @@
   // Canvas Ink Drawing Feature
   let isDrawingMode = false;
   let currentColor = '#e02424';
-  let penSeen = false;   // 스타일러스가 한 번이라도 인식되면 터치는 팜 리젝션
   const penBtn = document.getElementById('pen');
   const penTools = document.getElementById('penTools');
 
@@ -1968,60 +1989,25 @@
       };
     }
 
-    // 펜 필압 -> 선 굵기 (마우스는 pressure가 0 또는 0.5로 들어오므로 기본값 사용)
-    function widthOf(e) {
-      if (e.pointerType === 'pen' && e.pressure > 0) {
-        return 1.2 + e.pressure * 4.5;
-      }
-      return 3;
-    }
+    canvas.onmousedown = (e) => {
+      if (!isDrawingMode) return;
+      painting = true;
+      ctx.beginPath();
+      const {x, y} = getCoords(e);
+      ctx.moveTo(x, y);
+    };
 
-    function drawTo(e) {
+    canvas.onmousemove = (e) => {
+      if (!painting || !isDrawingMode) return;
       const {x, y} = getCoords(e);
       ctx.strokeStyle = currentColor;
-      ctx.lineWidth = widthOf(e);
+      ctx.lineWidth = 3;
       ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
       ctx.lineTo(x, y);
       ctx.stroke();
-      // 필압에 따라 굵기가 바뀌므로 매 구간을 새 경로로 이어간다
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-    }
+    };
 
-    canvas.addEventListener('pointerdown', (e) => {
-      if (!isDrawingMode) return;
-      // 펜이 감지되면 손바닥(터치) 입력은 무시 — 팜 리젝션
-      if (e.pointerType === 'touch' && penSeen) return;
-      if (e.pointerType === 'pen') penSeen = true;
-      e.preventDefault();
-      canvas.setPointerCapture(e.pointerId);   // 캔버스 밖으로 나가도 획이 끊기지 않음
-      painting = true;
-      const {x, y} = getCoords(e);
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-    });
-
-    canvas.addEventListener('pointermove', (e) => {
-      if (!painting || !isDrawingMode) return;
-      e.preventDefault();
-      // 고주사율 펜에서 누락된 중간 점까지 복원해 부드럽게
-      const events = (typeof e.getCoalescedEvents === 'function') ? e.getCoalescedEvents() : [e];
-      for (const ev of events) drawTo(ev);
-    });
-
-    function endStroke(e) {
-      if (!painting) return;
-      painting = false;
-      ctx.beginPath();
-      if (e && e.pointerId != null && canvas.hasPointerCapture(e.pointerId)) {
-        canvas.releasePointerCapture(e.pointerId);
-      }
-    }
-    canvas.addEventListener('pointerup', endStroke);
-    canvas.addEventListener('pointercancel', endStroke);
-    canvas.addEventListener('pointerleave', endStroke);
-
+    window.addEventListener('mouseup', () => painting = false);
     canvas.dataset.ready = "true";
   }
 
