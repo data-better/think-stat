@@ -312,6 +312,7 @@
   .drawing-active .ink {
     pointer-events: auto;
     cursor: crosshair;
+    touch-action: none;
   }
 
   /* Controls Navigation Bar */
@@ -1989,16 +1990,19 @@
       };
     }
 
-    canvas.onmousedown = (e) => {
+    canvas.onpointerdown = (e) => {
       if (!isDrawingMode) return;
+      e.preventDefault();
       painting = true;
+      try { canvas.setPointerCapture(e.pointerId); } catch(err) {}
       ctx.beginPath();
       const {x, y} = getCoords(e);
       ctx.moveTo(x, y);
     };
 
-    canvas.onmousemove = (e) => {
+    canvas.onpointermove = (e) => {
       if (!painting || !isDrawingMode) return;
+      e.preventDefault();
       const {x, y} = getCoords(e);
       ctx.strokeStyle = currentColor;
       ctx.lineWidth = 3;
@@ -2007,7 +2011,16 @@
       ctx.stroke();
     };
 
-    window.addEventListener('mouseup', () => painting = false);
+    const stopDrawing = (e) => {
+      if (painting) {
+        painting = false;
+        try { if (e && e.pointerId) canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+      }
+    };
+
+    canvas.onpointerup = stopDrawing;
+    canvas.onpointercancel = stopDrawing;
+    window.addEventListener('pointerup', stopDrawing);
     canvas.dataset.ready = "true";
   }
 
